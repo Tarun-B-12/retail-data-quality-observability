@@ -14,7 +14,9 @@ for quality issues and produce clear findings.
 You have access to tools. Use them step by step to:
 1. Load the dataset
 2. Profile it to understand its structure and quality
-3. Report your findings clearly, including which columns have quality issues and why they matter
+3. Run the validation suite to get pass/fail results and a health score
+4. Report your findings clearly, including which checks failed, what the health score means, 
+   and why each failure matters for a business analyst using this data
 
 Always explain your findings in business terms, not just numbers.
 Be thorough but concise."""
@@ -34,7 +36,7 @@ def run_agent(user_goal: str):
 
         response = client.messages.create(
             model="claude-haiku-4-5-20251001",
-            max_tokens=1000,
+            max_tokens=2000,
             system=SYSTEM_PROMPT,
             tools=TOOL_DEFINITIONS,
             messages=messages
@@ -60,7 +62,7 @@ def run_agent(user_goal: str):
                     print(f"Agent calling tool: {block.name}")
                     print(f"With inputs: {json.dumps(block.input, indent=2)}")
                     result = execute_tool(block.name, block.input)
-                    print(f"Tool result preview: {result[:200]}...")
+                    print(f"Tool result preview: {result[:300]}...")
                     tool_results.append({
                         "type": "tool_result",
                         "tool_use_id": block.id,
@@ -69,14 +71,15 @@ def run_agent(user_goal: str):
 
             messages.append({"role": "user", "content": tool_results})
 
-        if step >= 10:
+        if step >= 15:
             print("Max steps reached. Stopping.")
             break
 
 if __name__ == "__main__":
     run_agent(
         "Load the retail dataset from data/raw/online_retail_II.csv, "
-        "profile it for data quality issues, and give me a clear summary "
-        "of what you found including which columns have problems and why "
-        "those problems matter for a business analyst using this data."
+        "profile it, then run the full validation suite. "
+        "Give me a complete data quality report including the health score, "
+        "which checks passed and failed, and what each failure means for "
+        "a business team relying on this data."
     )
