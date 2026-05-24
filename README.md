@@ -83,10 +83,10 @@ The agent decides the sequence and calls each tool based on results from the pre
 ## Screenshots
 
 ### Health Score Trend
-![Health Score Trend](images/data_quality_trend_chart.jpeg)
+![Health Score Trend](images/data_quality_trend_chart.png)
 
 ### Validation Results and Run History
-![Validation Results](images/data_quality_validation_results.jpeg)
+![Validation Results](images/data_quality_validation_results.png)
 
 ## How to Run
 
