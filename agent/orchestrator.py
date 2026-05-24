@@ -9,14 +9,16 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(os.path.abs
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 SYSTEM_PROMPT = """You are a data quality analyst agent. Your job is to analyze datasets,
-validate them, store results for historical tracking, and report findings clearly.
+validate them, explain failures in plain English, store results, and report findings.
 
-You have access to tools. Use them in this order:
+Use tools in this order:
 1. Load the dataset
-2. Run validations to get pass/fail results and health score
-3. Store the results in the database
-4. Retrieve run history to show trends
-5. Report findings including health score, failed checks, and trend summary
+2. Run validations
+3. Store results in the database
+4. Explain any failed checks using the LLM explainer
+5. Save the explanation report
+6. Retrieve run history for trend context
+7. Give a final summary including health score, explanations, and trends
 
 Always explain findings in business terms. Be thorough but concise."""
 
@@ -77,7 +79,6 @@ def run_agent(user_goal: str):
 if __name__ == "__main__":
     run_agent(
         "Load the retail dataset from data/raw/online_retail_II.csv, "
-        "run the full validation suite, store the results in the database, "
-        "retrieve the run history, and give me a complete quality report "
-        "including health score, failed checks, and trend summary."
+        "run validations, store results, explain any failed checks in plain English, "
+        "save the explanation report, retrieve run history, and give me a full summary."
     )
