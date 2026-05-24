@@ -8,18 +8,17 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(os.path.abs
 
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
-SYSTEM_PROMPT = """You are a data quality analyst agent. Your job is to analyze datasets 
-for quality issues and produce clear findings.
+SYSTEM_PROMPT = """You are a data quality analyst agent. Your job is to analyze datasets,
+validate them, store results for historical tracking, and report findings clearly.
 
-You have access to tools. Use them step by step to:
+You have access to tools. Use them in this order:
 1. Load the dataset
-2. Profile it to understand its structure and quality
-3. Run the validation suite to get pass/fail results and a health score
-4. Report your findings clearly, including which checks failed, what the health score means, 
-   and why each failure matters for a business analyst using this data
+2. Run validations to get pass/fail results and health score
+3. Store the results in the database
+4. Retrieve run history to show trends
+5. Report findings including health score, failed checks, and trend summary
 
-Always explain your findings in business terms, not just numbers.
-Be thorough but concise."""
+Always explain findings in business terms. Be thorough but concise."""
 
 def run_agent(user_goal: str):
     print("\n" + "="*60)
@@ -78,8 +77,7 @@ def run_agent(user_goal: str):
 if __name__ == "__main__":
     run_agent(
         "Load the retail dataset from data/raw/online_retail_II.csv, "
-        "profile it, then run the full validation suite. "
-        "Give me a complete data quality report including the health score, "
-        "which checks passed and failed, and what each failure means for "
-        "a business team relying on this data."
+        "run the full validation suite, store the results in the database, "
+        "retrieve the run history, and give me a complete quality report "
+        "including health score, failed checks, and trend summary."
     )
