@@ -1,6 +1,6 @@
 # Data Quality Anomaly Explanations
 
-Generated: 2026-05-24T00:47:09.508121
+Generated: 2026-05-24T00:51:48.477879
 
 Health Score: 90.0/100
 
@@ -18,10 +18,8 @@ Failures Found: 1
 
 # Data Quality Issue: Negative Prices Detected
 
-**What's happening:** Our transaction data contains 5 records where the price field shows a negative value instead of a positive dollar amount. While this represents less than 0.01% of our dataset, it indicates these transactions were recorded incorrectly—likely data entry errors, refunds coded as new sales, or system glitches.
+We've found 5 transactions in your dataset where the price is showing as negative, which shouldn't be possible in normal retail operations. While this only affects a tiny fraction of your data (0.0005%), even a few incorrect prices can skew sales totals, revenue reports, and profitability analysis if they go unnoticed. These bad records could also cause problems downstream if they're used in automated reports or dashboards.
 
-**Why this matters:** Even a small number of negative prices can skew financial reports, inventory analysis, and revenue calculations. If someone runs a quick total on transaction value without catching this, we could misreport sales figures or make decisions based on incomplete information.
-
-**What to do:** I recommend we immediately investigate these 5 records to determine their root cause—whether they're refunds that should be marked differently, system errors, or something else—then correct them before publishing any reports. Going forward, we should implement an automated check that flags negative prices before data enters our system so this doesn't happen again.
+**My recommendation:** We should investigate these 5 transactions to understand why they occurred—whether they're refunds that were miscoded, data entry errors, or system glitches—and then correct them before finalizing any financial reporting for this period.
 
 ---

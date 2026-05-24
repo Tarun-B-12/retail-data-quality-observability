@@ -8,19 +8,18 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(os.path.abs
 
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
-SYSTEM_PROMPT = """You are a data quality analyst agent. Your job is to analyze datasets,
-validate them, explain failures in plain English, store results, and report findings.
-
-Use tools in this order:
-1. Load the dataset
+SYSTEM_PROMPT = """You are a data quality analyst agent. Complete the full pipeline in order:
+1. Load the dataset - filepath is always: data/raw/online_retail_II.csv
 2. Run validations
 3. Store results in the database
-4. Explain any failed checks using the LLM explainer
+4. Explain any failed checks
 5. Save the explanation report
-6. Retrieve run history for trend context
-7. Give a final summary including health score, explanations, and trends
+6. Generate the trend chart
+7. Generate the HTML report
+8. Give a final summary
 
-Always explain findings in business terms. Be thorough but concise."""
+Be efficient. Use tools in sequence. Explain findings in business terms."""
+
 
 def run_agent(user_goal: str):
     print("\n" + "="*60)
@@ -61,9 +60,8 @@ def run_agent(user_goal: str):
             for block in response.content:
                 if block.type == "tool_use":
                     print(f"Agent calling tool: {block.name}")
-                    print(f"With inputs: {json.dumps(block.input, indent=2)}")
                     result = execute_tool(block.name, block.input)
-                    print(f"Tool result preview: {result[:300]}...")
+                    print(f"Tool result preview: {result[:200]}...")
                     tool_results.append({
                         "type": "tool_result",
                         "tool_use_id": block.id,
@@ -72,13 +70,14 @@ def run_agent(user_goal: str):
 
             messages.append({"role": "user", "content": tool_results})
 
-        if step >= 15:
+        if step >= 20:
             print("Max steps reached. Stopping.")
             break
 
+
 if __name__ == "__main__":
     run_agent(
-        "Load the retail dataset from data/raw/online_retail_II.csv, "
-        "run validations, store results, explain any failed checks in plain English, "
-        "save the explanation report, retrieve run history, and give me a full summary."
+        "Run the complete data quality pipeline using file data/raw/online_retail_II.csv: "
+        "load data, validate, store results, explain failures, save reports, "
+        "generate trend chart and HTML report, then give me a full summary."
     )
