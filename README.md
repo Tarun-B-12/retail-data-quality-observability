@@ -30,24 +30,26 @@ Notes:
 ## Agent Architecture
 This project uses an agentic pipeline where Claude orchestrates 9 tools autonomously to complete the full quality check workflow.
 
-```text
-User Goal
-    |
-    v
-[ Orchestrator Agent (Claude Haiku) ]
-    |
-    |-- load_data tool
-    |-- profile_data tool
-    |-- run_validations tool
-    |-- store_results tool (DuckDB)
-    |-- explain_failures tool (Claude API)
-    |-- save_report tool (markdown)
-    |-- generate_trend_chart tool (PNG)
-    |-- generate_html_report tool (HTML)
-    |-- get_run_history tool
-    |
-    v
-Final Business Report
+
+```mermaid
+flowchart TD
+    A[User Goal] --> B[Orchestrator Agent\nClaude Haiku]
+    B --> C[load_data tool]
+    B --> D[profile_data tool]
+    B --> E[run_validations tool\n10 checks]
+    B --> F[store_results tool\nDuckDB]
+    B --> G[explain_failures tool\nClaude API]
+    B --> H[generate_html_report tool]
+    F --> I[Quality Results Store\nhealth score trending]
+    G --> J[Anomaly Explanations\nplain English report]
+    H --> K[HTML Quality Report\nwith trend chart]
+
+    style A fill:#E6F1FB,stroke:#378ADD,color:#0C447C
+    style B fill:#EEEDFE,stroke:#7F77DD,color:#3C3489
+    style I fill:#EAF3DE,stroke:#639922,color:#27500A
+    style J fill:#FAEEDA,stroke:#BA7517,color:#633806
+    style K fill:#E1F5EE,stroke:#1D9E75,color:#085041
+```
 ```
 
 The agent decides the sequence and calls each tool based on results from the previous step. No manual sequencing required.
